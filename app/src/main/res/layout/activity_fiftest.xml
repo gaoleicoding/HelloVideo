@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    tools:context="net.ossrs.yasea.demo.MainActivity">
+
+    <EditText
+        android:id="@+id/et_url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/accent_material_light"
+        android:textSize="14dp" />
+
+    <net.ossrs.yasea.SrsCameraView
+        android:id="@+id/glsurfaceview_camera"
+        android:layout_width="80dp"
+        android:layout_height="120dp"
+        android:layout_below="@id/et_url"
+        android:layout_marginTop="20dp" />
+
+    <ImageView
+        android:id="@+id/iv_snapshot"
+        android:layout_width="80dp"
+        android:layout_height="120dp"
+        android:layout_below="@id/glsurfaceview_camera"
+        android:layout_marginTop="20dp" />
+
+    <ImageView
+        android:id="@+id/iv_activity_shot"
+        android:layout_width="80dp"
+        android:layout_height="120dp"
+        android:layout_below="@id/iv_snapshot"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:id="@+id/bt_init"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/publish"
+        android:text="预览" />
+
+    <Button
+        android:id="@+id/pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/publish"
+        android:layout_toRightOf="@id/bt_init"
+        android:text="暂停" />
+
+    <Button
+        android:id="@+id/bt_snapshot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/publish"
+        android:layout_toRightOf="@id/pause"
+        android:text="抓拍" />
+
+    <Button
+        android:id="@+id/bt_activity_shot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/publish"
+        android:layout_toRightOf="@id/bt_snapshot"
+        android:text="截屏" />
+
+    <Button
+        android:id="@+id/publish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:text="推流" />
+
+    <Button
+        android:id="@+id/swCam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/publish"
+        android:layout_toRightOf="@+id/publish"
+        android:text="切换" />
+
+    <Button
+        android:id="@+id/record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/publish"
+        android:layout_toRightOf="@id/swCam"
+        android:text="录制" />
+
+    <Button
+        android:id="@+id/swEnc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/publish"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/record"
+        android:text="软解码" />
+
+</RelativeLayout>
