@@ -10,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.widget.ImageView;
@@ -183,10 +182,9 @@ public class BitmapUtil {
         return file;
     }
 
-    @NonNull
     public static String byteToFile(final byte[] data) {
         //拍照后的处理
-        String picRootDirectory =getPicRootDirectory();
+        String picRootDirectory = getPicRootDirectory();
         File dir = new File(picRootDirectory);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -319,12 +317,13 @@ public class BitmapUtil {
 
     /**
      * 缩放bitmap
+     *
      * @param bm
      * @param newWidth
      * @param newHeight
      * @return
      */
-    public static Bitmap zoomImg(Bitmap bm, int newWidth ,int newHeight){
+    public static Bitmap zoomImg(Bitmap bm, int newWidth, int newHeight) {
         // 获得图片的宽高
         int width = bm.getWidth();
         int height = bm.getHeight();
