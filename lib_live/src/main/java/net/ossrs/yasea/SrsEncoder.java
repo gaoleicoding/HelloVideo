@@ -88,6 +88,10 @@ public class SrsEncoder {
         this.mp4Muxer = mp4Muxer;
     }
 
+    public boolean isCameraFaceFront() {
+        return mCameraFaceFront;
+    }
+
     public boolean start() {
         if (flvMuxer == null || mp4Muxer == null) {
             return false;
@@ -172,14 +176,16 @@ public class SrsEncoder {
         return true;
     }
 
-    public void pause(){
+    public void pause() {
         mPausetime = System.nanoTime() / 1000;
     }
-    public void resume(){
+
+    public void resume() {
         long resumeTime = (System.nanoTime() / 1000) - mPausetime;
         mPresentTimeUs = mPresentTimeUs + resumeTime;
         mPausetime = 0;
     }
+
     public void stop() {
         if (useSoftEncoder) {
             closeSoftEncoder();
@@ -190,7 +196,7 @@ public class SrsEncoder {
             Log.i(TAG, "stop aencoder");
             try {
                 aencoder.stop();
-            }catch (IllegalStateException e){
+            } catch (IllegalStateException e) {
                 e.printStackTrace();
             }
             aencoder.release();
@@ -201,7 +207,7 @@ public class SrsEncoder {
             Log.i(TAG, "stop vencoder");
             try {
                 vencoder.stop();
-            }catch (IllegalStateException e){
+            } catch (IllegalStateException e) {
                 e.printStackTrace();
             }
             vencoder.release();
@@ -298,7 +304,7 @@ public class SrsEncoder {
             vOutWidth = vLandscapeWidth;
             vOutHeight = vLandscapeHeight;
         }
-        
+
         // Note: the stride of resolution must be set as 16x for hard encoding with some chip like MTK
         // Since Y component is quadruple size as U and V component, the stride must be set as 32x
         if (!useSoftEncoder && (vOutWidth % 32 != 0 || vOutHeight % 32 != 0)) {
@@ -358,11 +364,11 @@ public class SrsEncoder {
     }
 
     public void onGetPcmFrame(byte[] data, int size) {
-        
-        if(mPausetime > 0){
+
+        if (mPausetime > 0) {
             return;
-        }        
-        
+        }
+
         // Check video frame cache number to judge the networking situation.
         // Just cache GOP / FPS seconds data according to latency.
         AtomicInteger videoFrameCacheNumber = flvMuxer.getVideoFrameCacheNumber();
@@ -394,11 +400,11 @@ public class SrsEncoder {
     }
 
     public void onGetRgbaFrame(byte[] data, int width, int height) {
-        
-        if(mPausetime > 0){
+
+        if (mPausetime > 0) {
             return;
-        }                
-        
+        }
+
         // Check video frame cache number to judge the networking situation.
         // Just cache GOP / FPS seconds data according to latency.
         AtomicInteger videoFrameCacheNumber = flvMuxer.getVideoFrameCacheNumber();
@@ -560,10 +566,10 @@ public class SrsEncoder {
     @SuppressLint("MissingPermission")
     public AudioRecord chooseAudioRecord() {
         AudioRecord mic = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION, SrsEncoder.ASAMPLERATE,
-            AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, getPcmBufferSize() * 4);
+                AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, getPcmBufferSize() * 4);
         if (mic.getState() != AudioRecord.STATE_INITIALIZED) {
             mic = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION, SrsEncoder.ASAMPLERATE,
-                AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, getPcmBufferSize() * 4);
+                    AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, getPcmBufferSize() * 4);
             if (mic.getState() != AudioRecord.STATE_INITIALIZED) {
                 mic = null;
             } else {
@@ -578,7 +584,7 @@ public class SrsEncoder {
 
     private int getPcmBufferSize() {
         int pcmBufSize = AudioRecord.getMinBufferSize(ASAMPLERATE, AudioFormat.CHANNEL_IN_STEREO,
-            AudioFormat.ENCODING_PCM_16BIT) + 8191;
+                AudioFormat.ENCODING_PCM_16BIT) + 8191;
         return pcmBufSize - (pcmBufSize % 8192);
     }
 
@@ -644,20 +650,35 @@ public class SrsEncoder {
     }
 
     private native void setEncoderResolution(int outWidth, int outHeight);
+
     private native void setEncoderFps(int fps);
+
     private native void setEncoderGop(int gop);
+
     private native void setEncoderBitrate(int bitrate);
+
     private native void setEncoderPreset(String preset);
+
     private native byte[] RGBAToI420(byte[] frame, int width, int height, boolean flip, int rotate);
+
     private native byte[] RGBAToNV12(byte[] frame, int width, int height, boolean flip, int rotate);
-    private native byte[] ARGBToI420Scaled(int[] frame, int width, int height, boolean flip, int rotate, int crop_x, int crop_y,int crop_width, int crop_height);
-    private native byte[] ARGBToNV12Scaled(int[] frame, int width, int height, boolean flip, int rotate, int crop_x, int crop_y,int crop_width, int crop_height);
+
+    private native byte[] ARGBToI420Scaled(int[] frame, int width, int height, boolean flip, int rotate, int crop_x, int crop_y, int crop_width, int crop_height);
+
+    private native byte[] ARGBToNV12Scaled(int[] frame, int width, int height, boolean flip, int rotate, int crop_x, int crop_y, int crop_width, int crop_height);
+
     private native byte[] ARGBToI420(int[] frame, int width, int height, boolean flip, int rotate);
+
     private native byte[] ARGBToNV12(int[] frame, int width, int height, boolean flip, int rotate);
-    private native byte[] NV21ToNV12Scaled(byte[] frame, int width, int height, boolean flip, int rotate, int crop_x, int crop_y,int crop_width, int crop_height);
-    private native byte[] NV21ToI420Scaled(byte[] frame, int width, int height, boolean flip, int rotate, int crop_x, int crop_y,int crop_width, int crop_height);
+
+    private native byte[] NV21ToNV12Scaled(byte[] frame, int width, int height, boolean flip, int rotate, int crop_x, int crop_y, int crop_width, int crop_height);
+
+    private native byte[] NV21ToI420Scaled(byte[] frame, int width, int height, boolean flip, int rotate, int crop_x, int crop_y, int crop_width, int crop_height);
+
     private native int RGBASoftEncode(byte[] frame, int width, int height, boolean flip, int rotate, long pts);
+
     private native boolean openSoftEncoder();
+
     private native void closeSoftEncoder();
 
     static {

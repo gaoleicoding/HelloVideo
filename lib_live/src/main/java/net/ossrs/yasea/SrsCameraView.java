@@ -163,13 +163,6 @@ public class SrsCameraView extends GLSurfaceView implements GLSurfaceView.Render
             }
         }
 
-        if (isTakeCurrentFrame) {
-            Bitmap bmp = ScreenShotUtil.takeFrame(gl, mSurfaceWidth, mSurfaceHeight);
-            if (takeFrameListener != null) {
-                takeFrameListener.onTakeFrame(bmp);
-                isTakeCurrentFrame = false;
-            }
-        }
     }
 
     public void takeCurrentFrame(OnTakeFrameListener takeFrameListener) {

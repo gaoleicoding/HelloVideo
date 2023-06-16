@@ -10,12 +10,9 @@ import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.PixelCopy;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -30,7 +27,6 @@ import androidx.core.content.ContextCompat;
 import com.github.faucamp.simplertmp.RtmpHandler;
 import com.seu.magicfilter.utils.MagicFilterType;
 
-import net.ossrs.yasea.ScreenShotUtil;
 import net.ossrs.yasea.SrsCameraView;
 import net.ossrs.yasea.SrsEncodeHandler;
 import net.ossrs.yasea.SrsPublisher;
@@ -132,8 +128,7 @@ public class MainActivity extends AppCompatActivity implements RtmpHandler.RtmpL
         bt_snapshot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                screenshot(mCameraView, new SnapCameraListener() {
+                CameraShotUtil.getCameraShot(mPublisher, new CameraShotUtil.SnapCameraListener() {
                     @Override
                     public void onSnap(Bitmap bitmap) {
                         iv_snapshot.setImageBitmap(bitmap);
@@ -145,26 +140,20 @@ public class MainActivity extends AppCompatActivity implements RtmpHandler.RtmpL
         bt_activity_shot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                screenshot(mCameraView, new SnapCameraListener() {
+                CameraShotUtil.surfaceView2Bitmap(mCameraView, new CameraShotUtil.SnapCameraListener() {
                     @Override
                     public void onSnap(Bitmap bitmap) {
-                        Bitmap activityBitmap = ScreenShotUtil.activityShot(MainActivity.this);
+                        Bitmap activityBitmap = CameraShotUtil.activityShot(MainActivity.this);
                         Bitmap mergeBitmap = BitmapUtil.mergeBitmap(activityBitmap, bitmap);
                         iv_activity_shot.setImageBitmap(mergeBitmap);
                     }
                 });
 
+
             }
         });
 
-        mCameraView.setCameraCallbacksHandler(new SrsCameraView.CameraCallbacksHandler() {
-            @Override
-            public void onCameraParameters(Camera.Parameters params) {
-                //params.setFocusMode("custom-focus");
-                //params.setWhiteBalance("custom-balance");
-                //etc...
-            }
-        });
+
         btnInit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -267,35 +256,6 @@ public class MainActivity extends AppCompatActivity implements RtmpHandler.RtmpL
         }
     }
 
-    public void screenshot(SurfaceView surfaceView, final SnapCameraListener snapCameraListener) {
-        //需要截取的长和宽
-        int outWidth = surfaceView.getWidth() * 2;
-        int outHeight = surfaceView.getHeight() * 2;
-
-        final Bitmap mScreenBitmap = Bitmap.createBitmap(outWidth, outHeight, Bitmap.Config.ARGB_8888);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            PixelCopy.request(surfaceView, mScreenBitmap, new PixelCopy.OnPixelCopyFinishedListener() {
-                @Override
-                public void onPixelCopyFinished(int copyResult) {
-                    if (PixelCopy.SUCCESS == copyResult) {
-                        Log.i("gyx", "SUCCESS ");
-                        snapCameraListener.onSnap(mScreenBitmap);
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-//                                File file = BitmapUtil.bitmap2File(mScreenBitmap);
-//                                Log.d(TAG, "file path:" + file.getAbsolutePath());
-                            }
-                        });
-
-                    } else {
-                        Log.i("gyx", "FAILED");
-                        // onErrorCallback()
-                    }
-                }
-            }, new Handler());
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -554,8 +514,5 @@ public class MainActivity extends AppCompatActivity implements RtmpHandler.RtmpL
         handleException(e);
     }
 
-    interface SnapCameraListener {
-        void onSnap(Bitmap bitmap);
-    }
 
 }
