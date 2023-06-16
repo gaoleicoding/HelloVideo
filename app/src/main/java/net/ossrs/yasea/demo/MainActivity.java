@@ -51,8 +51,7 @@ public class MainActivity extends AppCompatActivity implements RtmpHandler.RtmpL
     private ImageView iv_snapshot, iv_activity_shot;
 
     private SharedPreferences sp;
-    private String rtmpUrl = "rtmp://srscs.iflyhed.com:1999/examAppLive/a31062263da54a0fbdd219fa4d6a4eea/alg10259";
-    private String rtmpUrl2 = "rtmp://60.205.208.197:1935/live/stream";
+    private String rtmpUrl = "";
     private String recPath = Environment.getExternalStorageDirectory().getPath() + "/test.mp4";
 
     private SrsPublisher mPublisher;
